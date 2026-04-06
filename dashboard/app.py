@@ -31,10 +31,10 @@ st.set_page_config(
 DB_URL = os.getenv("DATABASE_URL", "sqlite:///veille_juridique.db")
 
 IMPACT_COLOURS = {
-    "critique": "#c0392b",
-    "élevé":    "#e67e22",
-    "modéré":   "#f39c12",
-    "faible":   "#27ae60",
+    "critique": "#0D47A1",   # bleu très foncé
+    "élevé":    "#1565C0",   # bleu foncé
+    "modéré":   "#1E88E5",   # bleu moyen
+    "faible":   "#90CAF9",   # bleu clair
 }
 
 IMPACT_EMOJI = {

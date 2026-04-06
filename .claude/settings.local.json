@@ -10,7 +10,8 @@
       "Bash(netstat -ano)",
       "Bash(taskkill:*)",
       "Bash(cmd:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(git add:*)"
     ]
   }
 }
