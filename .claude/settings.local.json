@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir C:\\\\Users\\\\hp\\\\veille_juridique_ma:*)",
+      "Bash(python:*)",
+      "Bash(pip install:*)",
+      "Bash(streamlit run:*)",
+      "Bash(curl -s http://localhost:8501/healthz)",
+      "Bash(where streamlit:*)",
+      "Bash(netstat -ano)",
+      "Bash(taskkill:*)",
+      "Bash(cmd:*)",
+      "Bash(curl:*)"
+    ]
+  }
+}

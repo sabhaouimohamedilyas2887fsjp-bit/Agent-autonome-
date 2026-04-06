@@ -1,0 +1,64 @@
+# ============================================================
+# Veille Juridique Maroc – Configuration
+# ============================================================
+
+# ----------------------------------------------------------
+# Database
+# ----------------------------------------------------------
+database:
+  url: "sqlite:///veille_juridique.db"
+  # For PostgreSQL:
+  # url: "postgresql+psycopg2://user:password@localhost:5432/veille_juridique"
+
+# ----------------------------------------------------------
+# Claude AI
+# ----------------------------------------------------------
+claude:
+  model: "claude-sonnet-4-6"      # or claude-opus-4-6 for deeper analysis
+  max_tokens: 1024
+
+# ----------------------------------------------------------
+# Analysis settings
+# ----------------------------------------------------------
+analysis:
+  # Minimum criticality score (0-100) before calling Claude API
+  # Saves tokens by skipping obviously low-importance docs
+  min_criticality_score: 20
+
+# ----------------------------------------------------------
+# Alerts
+# ----------------------------------------------------------
+alerts:
+  # Minimum score (0-100) to trigger email/Slack notifications
+  min_score_to_alert: 50
+
+  email:
+    enabled: false
+    smtp_host: "smtp.gmail.com"
+    smtp_port: 587
+    # Credentials loaded from .env: SMTP_USERNAME, SMTP_PASSWORD, SMTP_FROM
+    recipients:
+      - "juriste@exemple.ma"
+      - "compliance@exemple.ma"
+
+  slack:
+    enabled: false
+    # Webhook loaded from .env: SLACK_WEBHOOK_URL
+    channel: "#veille-juridique"
+
+# ----------------------------------------------------------
+# Scheduler
+# ----------------------------------------------------------
+scheduler:
+  # Run every N hours (used when cron is not set)
+  interval_hours: 6
+  # Or use a cron expression (overrides interval_hours when set)
+  # cron: "0 7,13,19 * * *"   # 07:00, 13:00, 19:00 Casablanca time
+
+# ----------------------------------------------------------
+# Scrapers
+# ----------------------------------------------------------
+scrapers:
+  request_timeout: 30        # seconds
+  request_delay: 1.5         # seconds between requests (be polite)
+  max_docs_per_run: 20       # per scraper
