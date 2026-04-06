@@ -31,10 +31,10 @@ st.set_page_config(
 DB_URL = os.getenv("DATABASE_URL", "sqlite:///veille_juridique.db")
 
 IMPACT_COLOURS = {
-    "critique": "#B71C1C",   # rouge très foncé
-    "élevé":    "#C62828",   # rouge foncé
-    "modéré":   "#E53935",   # rouge moyen
-    "faible":   "#EF9A9A",   # rouge clair
+    "critique": "#E65100",   # orange brûlé
+    "élevé":    "#F57F17",   # jaune foncé
+    "modéré":   "#F9A825",   # jaune principal
+    "faible":   "#FFF176",   # jaune très clair
 }
 
 IMPACT_EMOJI = {
@@ -114,6 +114,26 @@ def load_score_distribution() -> pd.DataFrame:
     return pd.DataFrame(rows, columns=["Niveau", "Nombre"])
 
 
+def search_documents(query: str, limit: int = 30) -> list[LegalDocumentORM]:
+    """Full-text search on title, reference, content and tags."""
+    engine = get_engine()
+    q = query.strip().lower()
+    with Session(engine) as s:
+        rows = s.execute(
+            select(LegalDocumentORM)
+            .options(selectinload(LegalDocumentORM.analysis))
+            .where(
+                LegalDocumentORM.title.ilike(f"%{q}%")
+                | LegalDocumentORM.reference.ilike(f"%{q}%")
+                | LegalDocumentORM.content.ilike(f"%{q}%")
+                | LegalDocumentORM.source.ilike(f"%{q}%")
+            )
+            .order_by(desc(LegalDocumentORM.scraped_at))
+            .limit(limit)
+        ).scalars().all()
+    return rows
+
+
 def load_timeline(days: int) -> pd.DataFrame:
     engine = get_engine()
     cutoff = datetime.utcnow() - timedelta(days=days)
@@ -138,7 +158,7 @@ st.sidebar.divider()
 
 page = st.sidebar.radio(
     "Navigation",
-    ["📋 Documents", "➕ Ajouter un document", "🔧 Lancer un scraping"],
+    ["📋 Documents", "🔍 Recherche & Chat", "➕ Ajouter un document", "🔧 Lancer un scraping"],
     label_visibility="collapsed",
 )
 
@@ -426,3 +446,132 @@ elif page == "🔧 Lancer un scraping":
             progress.progress(1.0, text="Terminé !")
             st.success("Scraping terminé. Allez sur **📋 Documents** pour voir les résultats.")
             st.cache_resource.clear()
+
+# ══════════════════════════════════════════════════════════════════════════════
+# PAGE : Recherche & Chat
+# ══════════════════════════════════════════════════════════════════════════════
+
+elif page == "🔍 Recherche & Chat":
+    st.title("🔍 Recherche & Chat juridique")
+    st.caption("Recherchez des documents ou posez une question à Claude sur la base juridique marocaine.")
+
+    # ── Barre de recherche ────────────────────────────────────────────────────
+    with st.form("search_form", clear_on_submit=False):
+        col_input, col_btn = st.columns([5, 1])
+        query = col_input.text_input(
+            "🔎 Rechercher un document",
+            placeholder="Ex : protection des données, décret, CNDP, loi 09-08…",
+            label_visibility="collapsed",
+            key="search_query",
+        )
+        submitted = col_btn.form_submit_button("Rechercher", use_container_width=True)
+
+    if submitted and query:
+        results = search_documents(query)
+        if results:
+            st.markdown(f"**{len(results)} résultat(s) pour « {query} »**")
+            for doc in results:
+                analysis = doc.analysis
+                impact   = analysis.impact_level if analysis else "—"
+                score    = int(analysis.criticality_score) if analysis else 0
+                emoji    = IMPACT_EMOJI.get(impact, "⚪")
+                colour   = IMPACT_COLOURS.get(impact, "#888")
+
+                with st.expander(f"{emoji} **{doc.title[:100]}** — *{doc.source}*"):
+                    col1, col2, col3 = st.columns([2, 1, 1])
+                    col1.markdown(f"**Source :** {doc.source}  \n**Type :** {doc.doc_type}")
+                    col2.markdown(
+                        f"**Impact :** <span style='color:{colour};font-weight:bold'>"
+                        f"{impact.capitalize()}</span>",
+                        unsafe_allow_html=True,
+                    )
+                    col3.markdown(f"**Score :** {score}/100")
+                    if doc.url and not doc.url.startswith("manuel://"):
+                        st.markdown(f"[Voir le document original]({doc.url})")
+                    if analysis and analysis.summary:
+                        st.write(analysis.summary)
+                    if analysis and analysis.tags:
+                        st.markdown(" ".join(f"`{t}`" for t in analysis.tags))
+        else:
+            st.info("Aucun document trouvé pour cette recherche.")
+
+    st.divider()
+
+    # ── Chat ──────────────────────────────────────────────────────────────────
+    st.subheader("💬 Chat avec Claude")
+    st.caption("Posez une question — Claude consulte la base de documents pour vous répondre.")
+
+    if not os.getenv("ANTHROPIC_API_KEY"):
+        st.warning("Clé API Anthropic manquante. Définissez `ANTHROPIC_API_KEY` dans votre fichier `.env`.")
+    else:
+        # Initialise l'historique de chat en session
+        if "chat_history" not in st.session_state:
+            st.session_state.chat_history = []
+
+        # Affiche l'historique
+        for msg in st.session_state.chat_history:
+            with st.chat_message(msg["role"]):
+                st.markdown(msg["content"])
+
+        user_input = st.chat_input("Votre question juridique…")
+
+        if user_input:
+            # Affiche le message utilisateur
+            st.session_state.chat_history.append({"role": "user", "content": user_input})
+            with st.chat_message("user"):
+                st.markdown(user_input)
+
+            # Recherche de documents pertinents comme contexte
+            context_docs = search_documents(user_input, limit=5)
+            context_text = ""
+            if context_docs:
+                context_text = "\n\n---\n".join(
+                    f"**{d.title}** ({d.source}, {d.doc_type})\n"
+                    + (d.analysis.summary if d.analysis else d.content[:500] or "")
+                    for d in context_docs
+                )
+
+            system_prompt = (
+                "Tu es un assistant juridique expert en droit marocain. "
+                "Réponds en français, de manière claire et structurée. "
+                "Appuie tes réponses sur les documents fournis quand ils sont pertinents."
+            )
+
+            user_prompt = user_input
+            if context_text:
+                user_prompt = (
+                    f"{user_input}\n\n"
+                    f"[Documents pertinents dans la base :]\n{context_text}"
+                )
+
+            # Appel Claude
+            import anthropic as _anthropic
+            _client = _anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+
+            with st.chat_message("assistant"):
+                with st.spinner("Claude réfléchit…"):
+                    try:
+                        response = _client.messages.create(
+                            model="claude-sonnet-4-6",
+                            max_tokens=1024,
+                            system=system_prompt,
+                            messages=[
+                                {"role": m["role"], "content": m["content"]}
+                                for m in st.session_state.chat_history
+                                if m["role"] in ("user", "assistant")
+                            ] + ([{"role": "user", "content": user_prompt}]
+                                 if context_text else []),
+                        )
+                        answer = response.content[0].text
+                    except Exception as e:
+                        answer = f"Erreur API : {e}"
+
+                st.markdown(answer)
+
+            st.session_state.chat_history.append({"role": "assistant", "content": answer})
+
+        # Bouton pour effacer l'historique
+        if st.session_state.get("chat_history"):
+            if st.button("🗑️ Effacer la conversation", use_container_width=False):
+                st.session_state.chat_history = []
+                st.rerun()
