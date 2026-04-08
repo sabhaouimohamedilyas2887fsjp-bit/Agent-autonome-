@@ -365,8 +365,57 @@ elif page == "➕ Ajouter un document":
     st.title("➕ Ajouter un document")
     st.caption("Saisissez les informations du document juridique à intégrer dans la base.")
 
+    # ── Import depuis une URL ─────────────────────────────────────────────────
+    st.subheader("🔗 Importer depuis une URL")
+    col_url_input, col_url_btn = st.columns([5, 1])
+    url_import = col_url_input.text_input(
+        "URL du document", label_visibility="collapsed",
+        placeholder="https://www.sgg.gov.ma/BO/…/document.pdf  ou  page web",
+        key="url_import_field",
+    )
+    fetch_clicked = col_url_btn.button("Importer", use_container_width=True, key="fetch_url_btn")
+
+    fetched_title   = ""
+    fetched_content = ""
+    fetched_url     = ""
+
+    if fetch_clicked and url_import.strip():
+        import requests as _req
+        from io import BytesIO
+        _url = url_import.strip()
+        try:
+            with st.spinner("Téléchargement en cours…"):
+                resp = _req.get(_url, timeout=15, headers={"User-Agent": "Mozilla/5.0"})
+                resp.raise_for_status()
+                content_type = resp.headers.get("Content-Type", "")
+
+            if "pdf" in content_type or _url.lower().endswith(".pdf"):
+                import pdfplumber
+                with pdfplumber.open(BytesIO(resp.content)) as pdf:
+                    pages_text = [p.extract_text() or "" for p in pdf.pages]
+                fetched_content = "\n\n".join(pages_text).strip()
+                fetched_title   = _url.split("/")[-1].replace(".pdf", "").replace("_", " ").replace("-", " ")
+                st.success(f"PDF importé — {len(pdf.pages)} page(s), {len(fetched_content)} caractères extraits.")
+            else:
+                from bs4 import BeautifulSoup
+                soup = BeautifulSoup(resp.text, "lxml")
+                for tag in soup(["script", "style", "nav", "footer", "header"]):
+                    tag.decompose()
+                fetched_title   = soup.title.string.strip() if soup.title else _url.split("/")[-1]
+                fetched_content = soup.get_text(separator="\n", strip=True)
+                st.success(f"Page web importée — {len(fetched_content)} caractères extraits.")
+
+            fetched_url = _url
+            with st.expander("Aperçu du texte extrait"):
+                st.text(fetched_content[:2000] + ("…" if len(fetched_content) > 2000 else ""))
+
+        except Exception as e:
+            st.error(f"Erreur lors de l'import : {e}")
+
+    st.divider()
+
     # ── Upload PDF ────────────────────────────────────────────────────────────
-    st.subheader("📄 Importer un fichier PDF")
+    st.subheader("📄 Importer un fichier PDF local")
     uploaded_pdf = st.file_uploader("Choisissez un fichier PDF", type=["pdf"])
 
     pdf_title   = ""
@@ -387,19 +436,24 @@ elif page == "➕ Ajouter un document":
 
     st.divider()
 
+    # Priorité : URL > PDF > vide
+    _auto_title   = fetched_title   or pdf_title   or ""
+    _auto_content = fetched_content or pdf_content or ""
+    _auto_url     = fetched_url     or ""
+
     with st.form("form_add_doc", clear_on_submit=True):
         st.subheader("Informations principales")
         col_a, col_b = st.columns(2)
-        title     = col_a.text_input("Titre *", value=pdf_title, placeholder="Dahir n° 1-09-15 relatif à…")
+        title     = col_a.text_input("Titre *", value=_auto_title, placeholder="Dahir n° 1-09-15 relatif à…")
         reference = col_b.text_input("Référence", placeholder="n° 1-09-15")
 
         col_c, col_d = st.columns(2)
         source   = col_c.selectbox("Source *", KNOWN_SOURCES)
         doc_type = col_d.selectbox("Type de document *", DOC_TYPES)
 
-        url = st.text_input("URL du document", placeholder="https://www.sgg.gov.ma/…  (laisser vide si non disponible)")
+        url = st.text_input("URL du document", value=_auto_url, placeholder="https://www.sgg.gov.ma/…  (laisser vide si non disponible)")
         pub_date = st.date_input("Date de publication", value=None)
-        content  = st.text_area("Contenu / texte intégral", value=pdf_content, height=180,
+        content  = st.text_area("Contenu / texte intégral", value=_auto_content, height=180,
                                 placeholder="Collez ici le texte du document (facultatif mais recommandé pour l'analyse)…")
 
         st.divider()
