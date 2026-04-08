@@ -38,6 +38,12 @@ st.markdown("""
     /* Sidebar bleu foncé */
     [data-testid="stSidebar"] { background-color: #0D47A1; }
     [data-testid="stSidebar"] * { color: #FFFFFF !important; }
+    /* Texte dans les champs blancs de la sidebar en noir */
+    [data-testid="stSidebar"] .stSelectbox div[data-baseweb="select"] * { color: #000000 !important; }
+    [data-testid="stSidebar"] .stSelectbox [data-baseweb="popover"] * { color: #000000 !important; }
+    [data-testid="stSidebar"] input { color: #000000 !important; }
+    [data-testid="stSidebar"] [data-baseweb="select"] [class*="ValueContainer"] { color: #000000 !important; }
+    [data-testid="stSidebar"] [data-baseweb="select"] [class*="singleValue"] { color: #000000 !important; }
     [data-testid="stSidebar"] .stRadio label { color: #FFFFFF !important; }
     /* Titres bleu foncé */
     h1, h2, h3, h4 { color: #0D47A1 !important; }
