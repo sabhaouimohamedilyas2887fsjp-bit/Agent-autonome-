@@ -33,42 +33,59 @@ DB_URL = os.getenv("DATABASE_URL", "sqlite:///veille_juridique.db")
 # ── Thème bleu ─────────────────────────────────────────────────────────────────
 st.markdown("""
 <style>
-    /* Fond principal */
-    .stApp { background-color: #E3F2FD; }
-    /* Sidebar */
-    [data-testid="stSidebar"] { background-color: #1565C0; }
+    /* Fond principal blanc */
+    .stApp { background-color: #FFFFFF; color: #0D47A1; }
+    /* Sidebar bleu foncé */
+    [data-testid="stSidebar"] { background-color: #0D47A1; }
     [data-testid="stSidebar"] * { color: #FFFFFF !important; }
     [data-testid="stSidebar"] .stRadio label { color: #FFFFFF !important; }
-    /* Titres */
-    h1, h2, h3 { color: #0D47A1 !important; }
+    /* Titres bleu foncé */
+    h1, h2, h3, h4 { color: #0D47A1 !important; }
+    /* Texte général */
+    p, label, span, div { color: #0D47A1; }
     /* Boutons primaires */
     .stButton > button[kind="primary"] {
-        background-color: #1565C0 !important;
+        background-color: #0D47A1 !important;
         border-color: #0D47A1 !important;
         color: #FFFFFF !important;
     }
     .stButton > button[kind="primary"]:hover {
-        background-color: #0D47A1 !important;
+        background-color: #1565C0 !important;
     }
     /* Boutons secondaires */
     .stButton > button {
-        border-color: #1976D2 !important;
-        color: #1565C0 !important;
+        border-color: #0D47A1 !important;
+        color: #0D47A1 !important;
+        background-color: #FFFFFF !important;
+    }
+    .stButton > button:hover {
+        background-color: #E3F2FD !important;
     }
     /* Métriques */
-    [data-testid="stMetric"] { background-color: #BBDEFB; border-radius: 8px; padding: 10px; }
+    [data-testid="stMetric"] {
+        background-color: #0D47A1;
+        border-radius: 8px;
+        padding: 10px;
+        color: #FFFFFF !important;
+    }
+    [data-testid="stMetric"] * { color: #FFFFFF !important; }
     /* Expanders */
-    [data-testid="stExpander"] { border-left: 4px solid #1976D2; }
+    [data-testid="stExpander"] { border-left: 4px solid #0D47A1; background-color: #F5F9FF; }
     /* Dividers */
-    hr { border-color: #90CAF9; }
+    hr { border-color: #0D47A1; }
+    /* Inputs */
+    .stTextInput input, .stTextArea textarea, .stSelectbox select {
+        border-color: #0D47A1 !important;
+        color: #0D47A1 !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
 IMPACT_COLOURS = {
-    "critique": "#0D47A1",   # bleu très foncé
-    "élevé":    "#1565C0",   # bleu foncé
-    "modéré":   "#1976D2",   # bleu moyen
-    "faible":   "#90CAF9",   # bleu très clair
+    "critique": "#B71C1C",   # rouge foncé (alerte critique)
+    "élevé":    "#E65100",   # orange foncé
+    "modéré":   "#1565C0",   # bleu foncé
+    "faible":   "#1976D2",   # bleu moyen
 }
 
 IMPACT_EMOJI = {
