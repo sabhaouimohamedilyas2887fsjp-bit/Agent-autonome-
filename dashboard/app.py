@@ -323,8 +323,13 @@ if page == "📋 Documents":
                 )
                 col3.markdown(f"**Score :** {score}/100")
 
+                cap_parts = []
                 if doc.published_date:
-                    st.caption(f"Publié le {doc.published_date.strftime('%d/%m/%Y')}")
+                    cap_parts.append(f"Publié le {doc.published_date.strftime('%d/%m/%Y')}")
+                if doc.scraped_at:
+                    cap_parts.append(f"Mis à jour le {doc.scraped_at.strftime('%d/%m/%Y à %H:%M')} UTC")
+                if cap_parts:
+                    st.caption("  ·  ".join(cap_parts))
                 if doc.url and not doc.url.startswith("manuel://"):
                     st.markdown(f"[Voir le document original]({doc.url})")
 
