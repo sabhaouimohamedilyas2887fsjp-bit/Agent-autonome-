@@ -223,8 +223,7 @@ def load_timeline(days: int) -> pd.DataFrame:
 
 # ── sidebar ────────────────────────────────────────────────────────────────────
 
-st.sidebar.title("⚖️ Veille Juridique")
-st.sidebar.caption("Maroc — Monitoring légal automatisé")
+st.sidebar.title("⚖️ Agent Autonome de Veille Juridique et Réglementaire au Maroc")
 st.sidebar.divider()
 
 page = st.sidebar.radio(
