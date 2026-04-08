@@ -84,14 +84,14 @@ st.markdown("""
         border-color: #0D47A1 !important;
         color: #0D47A1 !important;
     }
-    /* Multiselect (scraping) — texte en noir dans les barres bleues */
+    /* Multiselect (scraping) — texte en blanc dans les barres bleues */
     [data-testid="stMultiSelect"] [data-baseweb="tag"] {
         background-color: #0D47A1 !important;
-        color: #000000 !important;
+        color: #FFFFFF !important;
     }
-    [data-testid="stMultiSelect"] [data-baseweb="tag"] span { color: #000000 !important; }
-    [data-testid="stMultiSelect"] [data-baseweb="tag"] [role="presentation"] { color: #000000 !important; }
-    [data-testid="stMultiSelect"] input { color: #000000 !important; }
+    [data-testid="stMultiSelect"] [data-baseweb="tag"] span { color: #FFFFFF !important; }
+    [data-testid="stMultiSelect"] [data-baseweb="tag"] [role="presentation"] { color: #FFFFFF !important; }
+    [data-testid="stMultiSelect"] input { color: #0D47A1 !important; }
 </style>
 """, unsafe_allow_html=True)
 
