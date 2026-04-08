@@ -342,10 +342,32 @@ elif page == "➕ Ajouter un document":
     st.title("➕ Ajouter un document")
     st.caption("Saisissez les informations du document juridique à intégrer dans la base.")
 
+    # ── Upload PDF ────────────────────────────────────────────────────────────
+    st.subheader("📄 Importer un fichier PDF")
+    uploaded_pdf = st.file_uploader("Choisissez un fichier PDF", type=["pdf"])
+
+    pdf_title   = ""
+    pdf_content = ""
+
+    if uploaded_pdf is not None:
+        try:
+            import pdfplumber
+            with pdfplumber.open(uploaded_pdf) as pdf:
+                pages_text = [p.extract_text() or "" for p in pdf.pages]
+            pdf_content = "\n\n".join(pages_text).strip()
+            pdf_title   = uploaded_pdf.name.replace(".pdf", "").replace("_", " ").replace("-", " ")
+            st.success(f"PDF chargé — {len(pdf.pages)} page(s), {len(pdf_content)} caractères extraits.")
+            with st.expander("Aperçu du texte extrait"):
+                st.text(pdf_content[:2000] + ("…" if len(pdf_content) > 2000 else ""))
+        except Exception as e:
+            st.error(f"Erreur lors de la lecture du PDF : {e}")
+
+    st.divider()
+
     with st.form("form_add_doc", clear_on_submit=True):
         st.subheader("Informations principales")
         col_a, col_b = st.columns(2)
-        title     = col_a.text_input("Titre *", placeholder="Dahir n° 1-09-15 relatif à…")
+        title     = col_a.text_input("Titre *", value=pdf_title, placeholder="Dahir n° 1-09-15 relatif à…")
         reference = col_b.text_input("Référence", placeholder="n° 1-09-15")
 
         col_c, col_d = st.columns(2)
@@ -354,7 +376,7 @@ elif page == "➕ Ajouter un document":
 
         url = st.text_input("URL du document", placeholder="https://www.sgg.gov.ma/…  (laisser vide si non disponible)")
         pub_date = st.date_input("Date de publication", value=None)
-        content  = st.text_area("Contenu / texte intégral", height=180,
+        content  = st.text_area("Contenu / texte intégral", value=pdf_content, height=180,
                                 placeholder="Collez ici le texte du document (facultatif mais recommandé pour l'analyse)…")
 
         st.divider()
