@@ -54,18 +54,20 @@ st.markdown("""
         background-color: #0D47A1 !important;
         border-color: #0D47A1 !important;
         color: #FFFFFF !important;
+        font-weight: bold !important;
     }
     .stButton > button[kind="primary"]:hover {
         background-color: #1565C0 !important;
     }
-    /* Boutons secondaires */
+    /* Bouton Lancer (use_container_width) */
     .stButton > button {
+        color: #FFFFFF !important;
+        background-color: #0D47A1 !important;
         border-color: #0D47A1 !important;
-        color: #0D47A1 !important;
-        background-color: #FFFFFF !important;
+        font-weight: bold !important;
     }
     .stButton > button:hover {
-        background-color: #E3F2FD !important;
+        background-color: #1565C0 !important;
     }
     /* Métriques */
     [data-testid="stMetric"] {
