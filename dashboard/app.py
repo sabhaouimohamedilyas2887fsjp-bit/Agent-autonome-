@@ -30,11 +30,45 @@ st.set_page_config(
 
 DB_URL = os.getenv("DATABASE_URL", "sqlite:///veille_juridique.db")
 
+# ── Thème bleu ─────────────────────────────────────────────────────────────────
+st.markdown("""
+<style>
+    /* Fond principal */
+    .stApp { background-color: #E3F2FD; }
+    /* Sidebar */
+    [data-testid="stSidebar"] { background-color: #1565C0; }
+    [data-testid="stSidebar"] * { color: #FFFFFF !important; }
+    [data-testid="stSidebar"] .stRadio label { color: #FFFFFF !important; }
+    /* Titres */
+    h1, h2, h3 { color: #0D47A1 !important; }
+    /* Boutons primaires */
+    .stButton > button[kind="primary"] {
+        background-color: #1565C0 !important;
+        border-color: #0D47A1 !important;
+        color: #FFFFFF !important;
+    }
+    .stButton > button[kind="primary"]:hover {
+        background-color: #0D47A1 !important;
+    }
+    /* Boutons secondaires */
+    .stButton > button {
+        border-color: #1976D2 !important;
+        color: #1565C0 !important;
+    }
+    /* Métriques */
+    [data-testid="stMetric"] { background-color: #BBDEFB; border-radius: 8px; padding: 10px; }
+    /* Expanders */
+    [data-testid="stExpander"] { border-left: 4px solid #1976D2; }
+    /* Dividers */
+    hr { border-color: #90CAF9; }
+</style>
+""", unsafe_allow_html=True)
+
 IMPACT_COLOURS = {
-    "critique": "#E65100",   # orange brûlé
-    "élevé":    "#F57F17",   # jaune foncé
-    "modéré":   "#F9A825",   # jaune principal
-    "faible":   "#FFF176",   # jaune très clair
+    "critique": "#0D47A1",   # bleu très foncé
+    "élevé":    "#1565C0",   # bleu foncé
+    "modéré":   "#1976D2",   # bleu moyen
+    "faible":   "#90CAF9",   # bleu très clair
 }
 
 IMPACT_EMOJI = {
