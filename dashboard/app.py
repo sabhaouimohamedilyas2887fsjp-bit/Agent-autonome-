@@ -228,7 +228,7 @@ st.sidebar.divider()
 
 page = st.sidebar.radio(
     "Navigation",
-    ["📋 Documents", "🔍 Recherche & Chat", "➕ Ajouter un document", "🔧 Lancer un scraping"],
+    ["📋 Documents", "🔍 Recherche & Chat", "➕ Ajouter un document", "🔧 Lancer un scraping", "⚙️ Paramètres email"],
     label_visibility="collapsed",
 )
 
@@ -726,3 +726,108 @@ elif page == "🔍 Recherche & Chat":
             if st.button("🗑️ Effacer la conversation", use_container_width=False):
                 st.session_state.chat_history = []
                 st.rerun()
+
+# ══════════════════════════════════════════════════════════════════════════════
+# PAGE : Paramètres email
+# ══════════════════════════════════════════════════════════════════════════════
+
+elif page == "⚙️ Paramètres email":
+    st.title("⚙️ Paramètres — Alertes email")
+    st.caption("Configurez les notifications email pour chaque nouveau document détecté.")
+
+    import yaml
+    from pathlib import Path
+
+    CONFIG_PATH = Path(__file__).resolve().parent.parent / "config.yaml"
+    ENV_PATH    = Path(__file__).resolve().parent.parent / ".env"
+
+    # Charger config actuelle
+    with open(CONFIG_PATH, encoding="utf-8") as f:
+        cfg = yaml.safe_load(f)
+
+    email_cfg = cfg.get("alerts", {}).get("email", {})
+    alert_cfg = cfg.get("alerts", {})
+
+    # Lire .env actuel
+    env_vars = {}
+    if ENV_PATH.exists():
+        for line in ENV_PATH.read_text(encoding="utf-8").splitlines():
+            if "=" in line and not line.startswith("#"):
+                k, _, v = line.partition("=")
+                env_vars[k.strip()] = v.strip()
+
+    st.subheader("📧 Configuration SMTP")
+    with st.form("email_settings_form"):
+        enabled = st.toggle("Activer les alertes email", value=email_cfg.get("enabled", False))
+
+        col1, col2 = st.columns(2)
+        smtp_host = col1.text_input("Serveur SMTP", value=email_cfg.get("smtp_host", "smtp.gmail.com"))
+        smtp_port = col2.number_input("Port", value=int(email_cfg.get("smtp_port", 587)), min_value=1, max_value=65535)
+
+        smtp_user = st.text_input("Adresse email expéditeur", value=env_vars.get("SMTP_USERNAME", ""))
+        smtp_pass = st.text_input("Mot de passe / App password", value=env_vars.get("SMTP_PASSWORD", ""), type="password")
+
+        recipients_raw = st.text_area(
+            "Destinataires (un email par ligne)",
+            value="\n".join(email_cfg.get("recipients", [])),
+            height=100,
+        )
+
+        st.divider()
+        min_score = st.slider(
+            "Score minimum pour envoyer une alerte",
+            min_value=0, max_value=100,
+            value=int(alert_cfg.get("min_score_to_alert", 50)),
+            help="0 = tous les documents, 100 = uniquement les plus critiques",
+        )
+
+        submitted = st.form_submit_button("💾 Enregistrer", use_container_width=True)
+
+    if submitted:
+        # Mettre à jour config.yaml
+        cfg["alerts"]["email"]["enabled"]    = enabled
+        cfg["alerts"]["email"]["smtp_host"]  = smtp_host
+        cfg["alerts"]["email"]["smtp_port"]  = smtp_port
+        cfg["alerts"]["email"]["recipients"] = [r.strip() for r in recipients_raw.splitlines() if r.strip()]
+        cfg["alerts"]["min_score_to_alert"]  = min_score
+
+        with open(CONFIG_PATH, "w", encoding="utf-8") as f:
+            yaml.dump(cfg, f, allow_unicode=True, default_flow_style=False, sort_keys=False)
+
+        # Mettre à jour .env
+        env_vars["SMTP_USERNAME"] = smtp_user
+        env_vars["SMTP_PASSWORD"] = smtp_pass
+        env_vars["SMTP_FROM"]     = smtp_user
+        env_content = "\n".join(f"{k}={v}" for k, v in env_vars.items())
+        ENV_PATH.write_text(env_content, encoding="utf-8")
+
+        st.success("✅ Configuration sauvegardée !")
+
+    st.divider()
+
+    # Test d'envoi
+    st.subheader("🧪 Tester l'envoi d'un email")
+    test_email = st.text_input("Email de test", value=env_vars.get("SMTP_USERNAME", ""))
+    if st.button("📨 Envoyer un email de test", use_container_width=True):
+        try:
+            import smtplib
+            from email.mime.text import MIMEText
+            msg = MIMEText("✅ Test réussi — Les alertes email de l'Agent Autonome de Veille Juridique sont bien configurées.", "plain", "utf-8")
+            msg["Subject"] = "⚖️ Test alerte — Veille Juridique Maroc"
+            msg["From"]    = env_vars.get("SMTP_USERNAME", "")
+            msg["To"]      = test_email
+            with smtplib.SMTP(smtp_host, smtp_port) as server:
+                server.starttls()
+                server.login(env_vars.get("SMTP_USERNAME", ""), env_vars.get("SMTP_PASSWORD", ""))
+                server.sendmail(msg["From"], [test_email], msg.as_string())
+            st.success(f"✅ Email de test envoyé à **{test_email}** !")
+        except Exception as e:
+            st.error(f"❌ Échec : {e}")
+
+    st.divider()
+    st.info(
+        "💡 **Astuce Gmail** : utilisez un *App Password* (mot de passe d'application) "
+        "et non votre mot de passe habituel. "
+        "Activez la validation en 2 étapes sur votre compte Google, puis générez "
+        "un App Password dans **Compte Google → Sécurité → Mots de passe des applications**."
+    )
