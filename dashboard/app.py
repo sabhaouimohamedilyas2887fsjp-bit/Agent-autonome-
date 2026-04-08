@@ -49,6 +49,10 @@ st.markdown("""
     h1, h2, h3, h4 { color: #0D47A1 !important; }
     /* Texte général */
     p, label, span, div { color: #0D47A1; }
+    /* Texte dans les boutons toujours blanc */
+    .stButton > button span, .stButton > button p, .stButton > button div {
+        color: #FFFFFF !important;
+    }
     /* Boutons primaires */
     .stButton > button[kind="primary"] {
         background-color: #0D47A1 !important;
