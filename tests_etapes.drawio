@@ -1,0 +1,166 @@
+<mxGraphModel>
+  <root>
+    <mxCell id="0" />
+    <mxCell id="1" parent="0" />
+
+    <!-- TITRE -->
+    <mxCell id="2" value="Plan de Test Étape par Étape — Agent de Veille Juridique" style="text;html=1;align=center;fontSize=18;fontStyle=1;fontColor=#0D47A1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+      <mxGeometry x="200" y="20" width="900" height="40" as="geometry" />
+    </mxCell>
+
+    <!-- ═══════════════════════ ÉTAPE 1 ═══════════════════════ -->
+    <mxCell id="e1_box" value="ÉTAPE 1 — Test du Scraper de Base" style="rounded=1;fillColor=#0D47A1;strokeColor=#0D47A1;fontColor=#ffffff;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="40" y="80" width="320" height="50" as="geometry" />
+    </mxCell>
+    <mxCell id="e1_fichier" value="test_etape1_scraper.py" style="rounded=1;fillColor=#E3F2FD;strokeColor=#0D47A1;fontColor=#0D47A1;fontSize=11;fontStyle=2;" vertex="1" parent="1">
+      <mxGeometry x="40" y="145" width="220" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="e1_t1" value="✅ Test 1 : Création document minimal" style="text;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;rounded=1;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="40" y="185" width="300" height="28" as="geometry" />
+    </mxCell>
+    <mxCell id="e1_t2" value="✅ Test 2 : Document complet (tous les champs)" style="text;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;rounded=1;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="40" y="218" width="300" height="28" as="geometry" />
+    </mxCell>
+    <mxCell id="e1_t3" value="✅ Test 3 : Conversion to_dict()" style="text;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;rounded=1;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="40" y="251" width="300" height="28" as="geometry" />
+    </mxCell>
+    <mxCell id="e1_t4" value="✅ Test 4 : scraped_at auto-rempli" style="text;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;rounded=1;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="40" y="284" width="300" height="28" as="geometry" />
+    </mxCell>
+    <mxCell id="e1_t5" value="✅ Test 5 : URLs distinctes" style="text;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;rounded=1;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="40" y="317" width="300" height="28" as="geometry" />
+    </mxCell>
+    <mxCell id="e1_result" value="5 / 5 PASSÉS" style="rounded=1;fillColor=#2E7D32;strokeColor=#1B5E20;fontColor=#ffffff;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="40" y="355" width="180" height="35" as="geometry" />
+    </mxCell>
+
+    <!-- ═══════════════════════ ÉTAPE 2 ═══════════════════════ -->
+    <mxCell id="e2_box" value="ÉTAPE 2 — Test du Scoring de Criticité" style="rounded=1;fillColor=#1565C0;strokeColor=#1565C0;fontColor=#ffffff;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="400" y="80" width="320" height="50" as="geometry" />
+    </mxCell>
+    <mxCell id="e2_fichier" value="test_etape2_scorer.py" style="rounded=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontColor=#0D47A1;fontSize=11;fontStyle=2;" vertex="1" parent="1">
+      <mxGeometry x="400" y="145" width="220" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="e2_t1" value="✅ Test 1 : Dahir BO → niveau critique" style="text;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;rounded=1;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="400" y="185" width="300" height="28" as="geometry" />
+    </mxCell>
+    <mxCell id="e2_t2" value="✅ Test 2 : Circulaire → niveau faible" style="text;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;rounded=1;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="400" y="218" width="300" height="28" as="geometry" />
+    </mxCell>
+    <mxCell id="e2_t3" value="✅ Test 3 : Mots-clés urgence → bonus score" style="text;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;rounded=1;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="400" y="251" width="300" height="28" as="geometry" />
+    </mxCell>
+    <mxCell id="e2_t4" value="✅ Test 4 : Niveaux faible/modéré/élevé/critique" style="text;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;rounded=1;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="400" y="284" width="300" height="28" as="geometry" />
+    </mxCell>
+    <mxCell id="e2_t5" value="✅ Test 5 : Score borné 0-100" style="text;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;rounded=1;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="400" y="317" width="300" height="28" as="geometry" />
+    </mxCell>
+    <mxCell id="e2_t6" value="✅ Test 6 : should_analyze() threshold" style="text;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;rounded=1;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="400" y="350" width="300" height="28" as="geometry" />
+    </mxCell>
+    <mxCell id="e2_result" value="6 / 6 PASSÉS" style="rounded=1;fillColor=#2E7D32;strokeColor=#1B5E20;fontColor=#ffffff;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="400" y="388" width="180" height="35" as="geometry" />
+    </mxCell>
+
+    <!-- ═══════════════════════ ÉTAPE 3 ═══════════════════════ -->
+    <mxCell id="e3_box" value="ÉTAPE 3 — Test de la Base de Données" style="rounded=1;fillColor=#E65100;strokeColor=#E65100;fontColor=#ffffff;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="760" y="80" width="320" height="50" as="geometry" />
+    </mxCell>
+    <mxCell id="e3_fichier" value="test_etape3_database.py  (SQLite en mémoire)" style="rounded=1;fillColor=#FFF8E1;strokeColor=#E65100;fontColor=#E65100;fontSize=11;fontStyle=2;" vertex="1" parent="1">
+      <mxGeometry x="760" y="145" width="290" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="e3_t1" value="✅ Test 1 : Insertion document" style="text;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;rounded=1;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="760" y="185" width="300" height="28" as="geometry" />
+    </mxCell>
+    <mxCell id="e3_t2" value="✅ Test 2 : Déduplication par URL" style="text;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;rounded=1;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="760" y="218" width="300" height="28" as="geometry" />
+    </mxCell>
+    <mxCell id="e3_t3" value="✅ Test 3 : Sauvegarde analyse" style="text;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;rounded=1;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="760" y="251" width="300" height="28" as="geometry" />
+    </mxCell>
+    <mxCell id="e3_t4" value="✅ Test 4 : has_analysis()" style="text;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;rounded=1;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="760" y="284" width="300" height="28" as="geometry" />
+    </mxCell>
+    <mxCell id="e3_t5" value="✅ Test 5 : Suppression document" style="text;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;rounded=1;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="760" y="317" width="300" height="28" as="geometry" />
+    </mxCell>
+    <mxCell id="e3_t6" value="✅ Test 6 : get_recent_documents()" style="text;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;rounded=1;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="760" y="350" width="300" height="28" as="geometry" />
+    </mxCell>
+    <mxCell id="e3_t7" value="✅ Test 7 : get_high_impact_documents()" style="text;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;rounded=1;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="760" y="383" width="300" height="28" as="geometry" />
+    </mxCell>
+    <mxCell id="e3_result" value="7 / 7 PASSÉS" style="rounded=1;fillColor=#2E7D32;strokeColor=#1B5E20;fontColor=#ffffff;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="760" y="421" width="180" height="35" as="geometry" />
+    </mxCell>
+
+    <!-- ═══════════════════════ ÉTAPE 4 ═══════════════════════ -->
+    <mxCell id="e4_box" value="ÉTAPE 4 — Test de l'Analyseur Claude (Mock)" style="rounded=1;fillColor=#6A1B9A;strokeColor=#6A1B9A;fontColor=#ffffff;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="40" y="480" width="380" height="50" as="geometry" />
+    </mxCell>
+    <mxCell id="e4_fichier" value="test_etape4_analyzer_mock.py  (sans appel API réel)" style="rounded=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;fontColor=#4A148C;fontSize=11;fontStyle=2;" vertex="1" parent="1">
+      <mxGeometry x="40" y="545" width="320" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="e4_t1" value="✅ Test 1 : Analyse complète simulée (mock API)" style="text;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;rounded=1;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="40" y="585" width="330" height="28" as="geometry" />
+    </mxCell>
+    <mxCell id="e4_t2" value="✅ Test 2 : Parsing JSON avec balises markdown" style="text;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;rounded=1;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="40" y="618" width="330" height="28" as="geometry" />
+    </mxCell>
+    <mxCell id="e4_t3" value="✅ Test 3 : Fallback si JSON invalide" style="text;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;rounded=1;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="40" y="651" width="330" height="28" as="geometry" />
+    </mxCell>
+    <mxCell id="e4_t4" value="✅ Test 4 : Troncature contenu long (&gt;8000 chars)" style="text;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;rounded=1;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="40" y="684" width="330" height="28" as="geometry" />
+    </mxCell>
+    <mxCell id="e4_t5" value="✅ Test 5 : AnalysisResult valeurs par défaut" style="text;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;rounded=1;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="40" y="717" width="330" height="28" as="geometry" />
+    </mxCell>
+    <mxCell id="e4_t6" value="✅ Test 6 : to_dict()" style="text;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;rounded=1;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="40" y="750" width="330" height="28" as="geometry" />
+    </mxCell>
+    <mxCell id="e4_result" value="6 / 6 PASSÉS" style="rounded=1;fillColor=#2E7D32;strokeColor=#1B5E20;fontColor=#ffffff;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="40" y="788" width="180" height="35" as="geometry" />
+    </mxCell>
+
+    <!-- ═══════════════════════ ÉTAPE 5 ═══════════════════════ -->
+    <mxCell id="e5_box" value="ÉTAPE 5 — Test du Pipeline Complet (Intégration)" style="rounded=1;fillColor=#00695C;strokeColor=#00695C;fontColor=#ffffff;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="480" y="480" width="400" height="50" as="geometry" />
+    </mxCell>
+    <mxCell id="e5_fichier" value="test_etape5_pipeline.py  (Scraping→DB→Scorer→Claude→Save)" style="rounded=1;fillColor=#E0F2F1;strokeColor=#00695C;fontColor=#004D40;fontSize=11;fontStyle=2;" vertex="1" parent="1">
+      <mxGeometry x="480" y="545" width="370" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="e5_t1" value="✅ Test 1 : Pipeline Scraping → DB" style="text;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;rounded=1;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="480" y="585" width="330" height="28" as="geometry" />
+    </mxCell>
+    <mxCell id="e5_t2" value="✅ Test 2 : Scoring différentiel (Dahir &gt; Circulaire)" style="text;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;rounded=1;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="480" y="618" width="330" height="28" as="geometry" />
+    </mxCell>
+    <mxCell id="e5_t3" value="✅ Test 3 : Filtrage avant analyse Claude" style="text;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;rounded=1;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="480" y="651" width="330" height="28" as="geometry" />
+    </mxCell>
+    <mxCell id="e5_t4" value="✅ Test 4 : Analyse → sauvegarde en base" style="text;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;rounded=1;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="480" y="684" width="330" height="28" as="geometry" />
+    </mxCell>
+    <mxCell id="e5_t5" value="✅ Test 5 : Idempotence (pas de doublons)" style="text;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;rounded=1;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="480" y="717" width="330" height="28" as="geometry" />
+    </mxCell>
+    <mxCell id="e5_result" value="5 / 5 PASSÉS" style="rounded=1;fillColor=#2E7D32;strokeColor=#1B5E20;fontColor=#ffffff;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="480" y="755" width="180" height="35" as="geometry" />
+    </mxCell>
+
+    <!-- ═══════════════════════ BILAN TOTAL ═══════════════════════ -->
+    <mxCell id="bilan" value="BILAN GLOBAL : 29 / 29 TESTS PASSÉS ✅" style="rounded=1;fillColor=#0D47A1;strokeColor=#0D47A1;fontColor=#ffffff;fontSize=16;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="280" y="860" width="500" height="55" as="geometry" />
+    </mxCell>
+
+    <!-- Flèches de séquence -->
+    <mxCell id="f1" value="Étape suivante" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#0D47A1;strokeWidth=2;dashed=1;fontColor=#0D47A1;fontSize=10;" edge="1" source="e1_result" target="e2_box" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="f2" value="Étape suivante" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#1565C0;strokeWidth=2;dashed=1;fontColor=#1565C0;fontSize=10;" edge="1" source="e2_result" target="e3_box" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="f3" value="Étape suivante" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#E65100;strokeWidth=2;dashed=1;fontColor=#E65100;fontSize=10;" edge="1" source="e3_result" target="e4_box" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="f4" value="Étape suivante" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#6A1B9A;strokeWidth=2;dashed=1;fontColor=#6A1B9A;fontSize=10;" edge="1" source="e4_result" target="e5_box" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="f5" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#00695C;strokeWidth=2;" edge="1" source="e5_result" target="bilan" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+  </root>
+</mxGraphModel>

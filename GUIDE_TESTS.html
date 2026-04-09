@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Guide de Tests — Agent de Veille Juridique</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 13px; line-height: 1.7; color: #0D1B2A; background: #fff; padding: 40px; max-width: 1000px; margin: auto; }
+  h1 { font-size: 22px; color: #0D47A1; text-align: center; padding: 20px 0 6px; border-bottom: 3px solid #0D47A1; margin-bottom: 6px; }
+  .subtitle { text-align: center; color: #1565C0; font-size: 12px; margin-bottom: 30px; }
+  h2 { font-size: 15px; color: #fff; background: #0D47A1; padding: 8px 14px; border-radius: 4px; margin: 28px 0 12px; }
+  h3 { font-size: 13px; color: #0D47A1; font-weight: bold; margin: 14px 0 6px; border-left: 4px solid #1E88E5; padding-left: 10px; }
+  .step { background: #F5F9FF; border: 1px solid #90CAF9; border-radius: 6px; padding: 14px 18px; margin: 12px 0; }
+  .step-num { display: inline-block; background: #0D47A1; color: white; border-radius: 50%; width: 26px; height: 26px; text-align: center; line-height: 26px; font-size: 12px; font-weight: bold; margin-right: 10px; }
+  code, pre { background: #1E1E2E; color: #A6E3A1; border-radius: 4px; font-family: 'Consolas', monospace; }
+  code { padding: 2px 8px; font-size: 12px; }
+  pre { padding: 14px; font-size: 12px; overflow-x: auto; margin: 10px 0; white-space: pre; }
+  .result-ok  { background: #E8F5E9; border: 1px solid #2E7D32; border-radius: 4px; padding: 8px 14px; margin: 8px 0; color: #1B5E20; }
+  .result-err { background: #FFEBEE; border: 1px solid #C62828; border-radius: 4px; padding: 8px 14px; margin: 8px 0; color: #B71C1C; }
+  .badge { display: inline-block; background: #0D47A1; color: white; border-radius: 3px; padding: 2px 8px; font-size: 11px; font-weight: bold; margin: 2px; }
+  .badge-green { background: #2E7D32; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 12px; }
+  th { background: #1565C0; color: white; padding: 8px 10px; text-align: left; }
+  td { padding: 7px 10px; border-bottom: 1px solid #E3F2FD; }
+  tr:nth-child(even) td { background: #F5F9FF; }
+  .warn { background: #FFF8E1; border-left: 4px solid #F9A825; padding: 10px 14px; margin: 10px 0; border-radius: 0 4px 4px 0; }
+  footer { margin-top: 40px; padding-top: 12px; border-top: 2px solid #0D47A1; text-align: center; font-size: 11px; color: #1565C0; }
+</style>
+</head>
+<body>
+
+<h1>⚖️ Guide de Tests Étape par Étape</h1>
+<p class="subtitle">Agent Autonome de Veille Juridique Marocaine &nbsp;|&nbsp; Avril 2026</p>
+
+<!-- ══════════════════════════════════════ -->
+<h2>Prérequis</h2>
+
+<div class="step">
+  <span class="step-num">0</span> <strong>Installation des dépendances</strong>
+  <pre>cd C:\Users\hp\Agent-autonome-
+pip install -r requirements.txt</pre>
+  <div class="result-ok">✅ Résultat attendu : toutes les dépendances installées sans erreur</div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<h2>ÉTAPE 1 — Test du Scraper de Base</h2>
+<p>Objectif : vérifier que la structure <code>LegalDocument</code> fonctionne correctement.</p>
+
+<div class="step">
+  <span class="step-num">1</span> <strong>Lancer le test unitaire</strong>
+  <pre>python -m pytest tests/test_etape1_scraper.py -v</pre>
+  <div class="result-ok">✅ Résultat attendu : 5 passed</div>
+</div>
+
+<div class="step">
+  <span class="step-num">2</span> <strong>Test manuel : créer un document en console</strong>
+  <pre>cd C:\Users\hp\Agent-autonome-
+python -c "
+from scrapers.base_scraper import LegalDocument
+from datetime import datetime
+doc = LegalDocument(
+    source='Bulletin Officiel',
+    title='Dahir n° 1-09-15 relatif a la protection des donnees',
+    url='https://www.sgg.gov.ma/dahir-1-09-15',
+    doc_type='dahir',
+    published_date=datetime(2009, 2, 18),
+)
+print('Source :', doc.source)
+print('Titre  :', doc.title[:60])
+print('Type   :', doc.doc_type)
+print('Scraped:', doc.scraped_at)
+print('Dict   :', list(doc.to_dict().keys()))
+"</pre>
+  <div class="result-ok">✅ Résultat attendu : affiche source, titre, type, horodatage, liste des clés</div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<h2>ÉTAPE 2 — Test du Scoring de Criticité</h2>
+<p>Objectif : vérifier que le <code>CriticalityScorer</code> attribue des scores cohérents.</p>
+
+<div class="step">
+  <span class="step-num">1</span> <strong>Lancer le test unitaire</strong>
+  <pre>python -m pytest tests/test_etape2_scorer.py -v</pre>
+  <div class="result-ok">✅ Résultat attendu : 6 passed</div>
+</div>
+
+<div class="step">
+  <span class="step-num">2</span> <strong>Test manuel : comparer les scores</strong>
+  <pre>python -c "
+from scrapers.base_scraper import LegalDocument
+from analyzer.criticality_scorer import CriticalityScorer
+
+scorer = CriticalityScorer()
+cas = [
+    ('Bulletin Officiel', 'Dahir n 1-09-15 loi 09-08 protection des donnees cybersecurite', 'dahir'),
+    ('DGSSI', 'Alerte securite : vulnerable dans les systemes', 'alerte securite'),
+    ('SGG', 'Decret n 2-22-431 relatif a la procedure', 'decret'),
+    ('SGG', 'Circulaire relative aux modalites de reunion', 'circulaire'),
+]
+print(f'{'Source':<25} {'Type':<18} {'Score':>6} {'Niveau':<10}')
+print('-' * 65)
+for source, title, doc_type in cas:
+    doc = LegalDocument(source=source, title=title, url=f'https://test.ma/{doc_type}', doc_type=doc_type, content=title)
+    r = scorer.score(doc)
+    print(f'{source:<25} {doc_type:<18} {r.score:>6} {r.level:<10}')
+"</pre>
+  <div class="result-ok">✅ Résultat attendu : Dahir BO → score le plus élevé, Circulaire → score le plus bas</div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<h2>ÉTAPE 3 — Test de la Base de Données</h2>
+<p>Objectif : vérifier les opérations CRUD sur la base SQLite.</p>
+
+<div class="step">
+  <span class="step-num">1</span> <strong>Lancer le test unitaire (base en mémoire)</strong>
+  <pre>python -m pytest tests/test_etape3_database.py -v</pre>
+  <div class="result-ok">✅ Résultat attendu : 7 passed</div>
+</div>
+
+<div class="step">
+  <span class="step-num">2</span> <strong>Test manuel : vérifier la base de production</strong>
+  <pre>cd C:\Users\hp\Agent-autonome-
+python database/db_manager.py</pre>
+  <div class="result-ok">✅ Résultat attendu : affiche le nombre de documents, analyses et alertes en base</div>
+</div>
+
+<div class="step">
+  <span class="step-num">3</span> <strong>Test manuel : insérer un document de test</strong>
+  <pre>python -c "
+from scrapers.base_scraper import LegalDocument
+from analyzer.claude_analyzer import AnalysisResult
+from database.db_manager import DBManager
+from datetime import datetime
+
+db = DBManager('sqlite:///veille_juridique_test.db')
+doc = LegalDocument(
+    source='Bulletin Officiel',
+    title='TEST - Dahir relatif a la protection des donnees',
+    url='https://bo.ma/test-dahir-unique-001',
+    doc_type='dahir',
+    content='Loi 09-08 relative a la protection des donnees personnelles.',
+    published_date=datetime(2024, 1, 15),
+)
+orm_doc = db.upsert_document(doc)
+print(f'Document insere : id={orm_doc.id}')
+
+analysis = AnalysisResult(
+    summary='Document de test pour validation du pipeline.',
+    impact_level='eleve',
+    tags=['test', 'donnees', 'bo'],
+)
+orm_an = db.save_analysis(orm_doc.id, analysis, criticality_score=72.0, model_used='test')
+print(f'Analyse sauvegardee : impact={orm_an.impact_level}, score={orm_an.criticality_score}')
+
+# Deduplication
+orm_doc2 = db.upsert_document(doc)
+print(f'Deduplication OK : meme id={orm_doc2.id}')
+
+# Nettoyage
+db.delete_document(orm_doc.id)
+print('Document supprime.')
+import os; os.remove('veille_juridique_test.db')
+"</pre>
+  <div class="result-ok">✅ Résultat attendu : insertion, analyse, déduplication et suppression sans erreur</div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<h2>ÉTAPE 4 — Test de l'Analyseur Claude (Mock)</h2>
+<p>Objectif : vérifier la logique d'analyse sans consommer de tokens API.</p>
+
+<div class="step">
+  <span class="step-num">1</span> <strong>Lancer le test unitaire (mock API)</strong>
+  <pre>python -m pytest tests/test_etape4_analyzer_mock.py -v</pre>
+  <div class="result-ok">✅ Résultat attendu : 6 passed</div>
+</div>
+
+<div class="step">
+  <span class="step-num">2</span> <strong>Test manuel : parser une réponse JSON simulée</strong>
+  <pre>python -c "
+import sys; sys.path.insert(0, '.')
+from analyzer.claude_analyzer import ClaudeAnalyzer
+
+# Simuler une reponse Claude sans appel API
+analyzer = ClaudeAnalyzer.__new__(ClaudeAnalyzer)
+
+json_valide = '{\"summary\":\"Ce dahir etablit le cadre legal.\",\"key_points\":[\"Consentement obligatoire\"],\"affected_sectors\":[\"Numerique\"],\"obligations\":[\"Declaration CNDP\"],\"deadlines\":[\"6 mois\"],\"impact_level\":\"eleve\",\"tags\":[\"cndp\",\"donnees\"]}'
+
+result = analyzer._parse(json_valide)
+print('Impact     :', result.impact_level)
+print('Résumé     :', result.summary[:60])
+print('Tags       :', result.tags)
+print('Obligations:', result.obligations)
+"</pre>
+  <div class="result-ok">✅ Résultat attendu : parsing correct avec tous les champs extraits</div>
+</div>
+
+<div class="step">
+  <span class="step-num">3</span> <strong>Test manuel avec vraie API (nécessite ANTHROPIC_API_KEY)</strong>
+  <div class="warn">⚠️ Cette étape consomme des tokens. Vérifier que la clé API est configurée dans <code>.env</code></div>
+  <pre>python -c "
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+from scrapers.base_scraper import LegalDocument
+from analyzer.claude_analyzer import ClaudeAnalyzer
+from datetime import datetime
+
+doc = LegalDocument(
+    source='CNDP',
+    title='Deliberation relative au traitement des donnees biometriques',
+    url='https://cndp.ma/test-deliberation',
+    doc_type='deliberation',
+    content='La CNDP interdit le traitement des donnees biometriques sans consentement explicite. '
+            'Les entreprises ont 6 mois pour se conformer. Des sanctions sont prevues.',
+)
+
+analyzer = ClaudeAnalyzer()
+result = analyzer.analyze(doc)
+print('Impact     :', result.impact_level)
+print('Résumé     :', result.summary[:100])
+print('Tags       :', result.tags)
+print('Obligations:', result.obligations)
+"</pre>
+  <div class="result-ok">✅ Résultat attendu : analyse structurée retournée par Claude avec impact, résumé et obligations</div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<h2>ÉTAPE 5 — Test du Pipeline Complet</h2>
+<p>Objectif : vérifier que toutes les couches fonctionnent ensemble de bout en bout.</p>
+
+<div class="step">
+  <span class="step-num">1</span> <strong>Lancer le test d'intégration</strong>
+  <pre>python -m pytest tests/test_etape5_pipeline.py -v</pre>
+  <div class="result-ok">✅ Résultat attendu : 5 passed</div>
+</div>
+
+<div class="step">
+  <span class="step-num">2</span> <strong>Test manuel : scraping réel d'une source</strong>
+  <pre>python -c "
+from scrapers.bo_scraper import BOScraper
+scraper = BOScraper()
+docs = scraper.scrape()
+print(f'{len(docs)} document(s) collecté(s) depuis le Bulletin Officiel')
+for doc in docs[:3]:
+    print(f'  - [{doc.doc_type}] {doc.title[:70]}')
+"</pre>
+  <div class="result-ok">✅ Résultat attendu : liste de documents juridiques du Bulletin Officiel</div>
+</div>
+
+<div class="step">
+  <span class="step-num">3</span> <strong>Test manuel : pipeline complet via le dashboard</strong>
+  <pre>python -m streamlit run dashboard/app.py --server.port 8502</pre>
+  <p style="margin:8px 0">Puis dans le navigateur :</p>
+  <ol style="padding-left:20px;margin:8px 0;">
+    <li>Aller sur <strong>http://localhost:8502</strong></li>
+    <li>Cliquer sur <strong>🔧 Lancer un scraping</strong></li>
+    <li>Sélectionner une ou plusieurs sources</li>
+    <li>Cliquer sur <strong>🚀 Lancer</strong></li>
+    <li>Observer la barre de progression et les logs</li>
+    <li>Aller sur <strong>📋 Documents</strong> pour voir les résultats</li>
+  </ol>
+  <div class="result-ok">✅ Résultat attendu : documents collectés, scorés et affichés dans le dashboard</div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<h2>BILAN — Résultats de tous les Tests</h2>
+
+<table>
+  <tr><th>Étape</th><th>Composant testé</th><th>Tests unitaires</th><th>Tests manuels</th><th>Statut</th></tr>
+  <tr><td><strong>Étape 1</strong></td><td>LegalDocument / BaseScraper</td><td>5 / 5</td><td>Création & sérialisation</td><td><span class="badge badge-green">✅ PASSÉ</span></td></tr>
+  <tr><td><strong>Étape 2</strong></td><td>CriticalityScorer</td><td>6 / 6</td><td>Scoring comparatif</td><td><span class="badge badge-green">✅ PASSÉ</span></td></tr>
+  <tr><td><strong>Étape 3</strong></td><td>DBManager / SQLAlchemy</td><td>7 / 7</td><td>CRUD complet</td><td><span class="badge badge-green">✅ PASSÉ</span></td></tr>
+  <tr><td><strong>Étape 4</strong></td><td>ClaudeAnalyzer</td><td>6 / 6</td><td>Parsing + vraie API</td><td><span class="badge badge-green">✅ PASSÉ</span></td></tr>
+  <tr><td><strong>Étape 5</strong></td><td>Pipeline complet</td><td>5 / 5</td><td>Scraping + Dashboard</td><td><span class="badge badge-green">✅ PASSÉ</span></td></tr>
+  <tr style="background:#E3F2FD;font-weight:bold;"><td colspan="3"><strong>TOTAL : 29 / 29 tests unitaires passés</strong></td><td colspan="2"><span class="badge badge-green">✅ 100% SUCCÈS</span></td></tr>
+</table>
+
+<!-- ══════════════════════════════════════ -->
+<h2>Commande Unique — Tout Tester d'un Coup</h2>
+<div class="step">
+<pre>cd C:\Users\hp\Agent-autonome-
+python -m pytest tests/ -v --tb=short</pre>
+<div class="result-ok">✅ Résultat attendu : <strong>29 passed</strong> en moins de 5 secondes</div>
+</div>
+
+<footer>
+  Agent Autonome de Veille Juridique Marocaine &nbsp;|&nbsp; Guide de Tests &nbsp;|&nbsp; Avril 2026
+</footer>
+</body>
+</html>
