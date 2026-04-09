@@ -7,8 +7,8 @@ port = 8501
 fileWatcherType = "poll"
 
 [theme]
-primaryColor        = "#F9A825"   # jaune principal (boutons, liens actifs)
+primaryColor        = "#1565C0"   # bleu principal (boutons, liens actifs)
 backgroundColor     = "#FFFFFF"   # fond blanc
-secondaryBackgroundColor = "#FFFDE7"  # jaune très clair (sidebar, cards)
+secondaryBackgroundColor = "#E3F2FD"  # bleu très clair (sidebar, cards)
 textColor           = "#0D1B2A"   # texte quasi-noir
 font                = "sans serif"
